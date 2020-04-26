@@ -20,6 +20,7 @@ package org.apache.flink.streaming.connectors.elasticsearch;
 
 import org.apache.flink.annotation.Internal;
 
+import org.elasticsearch.action.Action;
 import org.elasticsearch.action.ActionRequest;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.index.IndexRequest;
@@ -30,6 +31,8 @@ import javax.annotation.concurrent.NotThreadSafe;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Implementation of a {@link RequestIndexer} that buffers {@link ActionRequest ActionRequests}
@@ -39,10 +42,10 @@ import java.util.List;
 @NotThreadSafe
 class BufferingNoOpRequestIndexer implements RequestIndexer {
 
-	private List<ActionRequest> bufferedRequests;
+	private Queue<ActionRequest> bufferedRequests;
 
 	BufferingNoOpRequestIndexer() {
-		this.bufferedRequests = new ArrayList<>(10);
+		this.bufferedRequests = new ConcurrentLinkedQueue<>();
 	}
 
 	@Override
